@@ -1,0 +1,47 @@
+pipeline {
+    agent any  // or use: agent { label 'windows' }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Verify .NET SDK') {
+            steps {
+                bat 'dotnet --version'
+            }
+        }
+
+        stage('Restore dependencies') {
+            steps {
+                bat 'dotnet restore'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                bat 'dotnet build --no-restore'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat 'dotnet test --no-build --verbosity normal'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+        success {
+            echo 'Build succeeded ✅'
+        }
+        failure {
+            echo 'Build failed ❌'
+        }
+    }
+}
