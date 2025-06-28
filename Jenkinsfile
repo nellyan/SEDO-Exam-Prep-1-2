@@ -8,9 +8,15 @@ pipeline {
             }
         }
 
-        stage('Verify .NET SDK') {
+        stage('Run only on develop or main') {
+            when {
+                anyOf {
+                    branch 'develop'
+                    branch 'main'
+                }
+            }
             steps {
-                bat 'dotnet --version'
+                echo 'This runs only on develop or main branches.'
             }
         }
 
@@ -45,3 +51,4 @@ pipeline {
         }
     }
 }
+
